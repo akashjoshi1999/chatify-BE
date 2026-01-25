@@ -4,6 +4,10 @@ const apiRoutes = require('./routes');
 const { ServerConfig } = require('./config'); 
 
 const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const PORT = ServerConfig.PORT || 3000;
 
 app.use('/api', apiRoutes)
