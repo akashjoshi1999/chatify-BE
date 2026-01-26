@@ -1,78 +1,111 @@
+const userRepo = require('./auth.repository');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { ServerConfig } = require('../../config');
+
+/**
+ * LOGIN
+ */
 exports.login = async ({ email, password }) => {
-  // 1. Find user
-  // 2. Check password
-  // 3. Generate token
+  const user = await userRepo.findByEmailWithPassword(email);
+
+  if (!user) {
+    throw new Error('Invalid credentials');
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    throw new Error('Invalid credentials');
+  }
+
+  const JWT_SECRET = ServerConfig.JWT_SECRET;
+
+  const token = jwt.sign(
+    { id: user._id }, JWT_SECRET, { expiresIn: '15m' }
+  );
+
+  return { token };
+};
+
+/**
+ * SIGN UP
+ */
+exports.signUp = async ({ email, password, name }) => {
+  const existing = await userRepo.findByEmailWithPassword(email);
+  if (existing) {
+    throw new Error('User already exists');
+  }
+
+  const hashed = await bcrypt.hash(password, 10);
+
+  const user = await userRepo.createUser({
+    name,
+    email,
+    password: hashed
+  });
+
   return {
-    message: 'Login successful',
-    accessToken: 'jwt-token'
+    message: 'User registered successfully',
+    userId: user._id
   };
 };
 
-exports.signUp = async ({ email, password }) => {
-  // 1. Check if user exists
-  // 2. Hash password
-  // 3. Save user
+/**
+ * REFRESH TOKEN
+ */
+exports.refreshToken = async ({ refreshToken }) => {
+  // validate refresh token (store hashed in DB ideally)
   return {
-    message: 'User registered successfully'
+    token: 'new-access-token'
   };
 };
 
-exports.refreshToken = async ({ email, password }) => {
-  // 1. Check if user exists
-  // 2. Hash password
-  // 3. Save user
-  return {
-    message: 'Token updated successfully',
-    token: ''
-  };
+/**
+ * GET ME
+ */
+exports.getMe = async (userId) => {
+  const user = await userRepo.findById(userId);
+  if (!user) throw new Error('User not found');
+  return user;
 };
 
-exports.getMe = async ({ email, password }) => {
-  // 1. Check if user exists
-  // 2. Hash password
-  // 3. Save user
-  return {
-    message: 'Token updated successfully',
-    token: ''
-  };
-};
-
+/**
+ * FORGOT PASSWORD
+ */
 exports.forgotPassword = async ({ email }) => {
-  // 1. Check user
-  // 2. Generate reset token
-  // 3. Send email
-  return {
-    message: 'Password reset link sent'
-  };
+  // generate reset token & email
+  return { message: 'Password reset link sent' };
 };
 
-exports.changePassword = async ({ email }) => {
-  // 1. Check user
-  // 2. Generate reset token
-  // 3. Send email
-  return {
-    message: 'Password reset link sent'
-  };
-};
-
-exports.verifyEmail = async ({ email }) => {
-  // 1. Check user
-  // 2. Generate reset token
-  // 3. Send email
-  return {
-    message: 'Password reset link sent'
-  };
-};
-
+/**
+ * RESET PASSWORD
+ */
 exports.resetPassword = async ({ token, password }) => {
-  // 1. Verify token
-  // 2. Update password
-  return {
-    message: 'Password reset successful'
-  };
+  // verify token
+  // hash password
+  return { message: 'Password reset successful' };
 };
 
-exports.logout = async (user) => {
-  // 1. Invalidate refresh token
+/**
+ * CHANGE PASSWORD
+ */
+exports.changePassword = async ({ userId, password }) => {
+  const hashed = await bcrypt.hash(password, 10);
+  await userRepo.updateById(userId, { password: hashed });
+  return { message: 'Password changed successfully' };
+};
+
+/**
+ * VERIFY EMAIL
+ */
+exports.verifyEmail = async ({ token }) => {
+  return { message: 'Email verified successfully' };
+};
+
+/**
+ * LOGOUT
+ */
+exports.logout = async (userId) => {
+  // invalidate refresh token
   return true;
 };
