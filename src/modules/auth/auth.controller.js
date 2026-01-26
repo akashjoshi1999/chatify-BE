@@ -29,8 +29,8 @@ exports.refreshToken = async (req, res, next) => {
 
 exports.getMe = async (req, res, next) => {
   try {
-    const result = await authService.getMe(req.body);
-    res.status(201).json(result);
+    const result = await authService.getMe(req.user);
+    res.status(200).json(result);
   } catch (err) {
     next(err);
   }

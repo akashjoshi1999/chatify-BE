@@ -19,10 +19,10 @@ const { authenticate } = require('../../../modules/auth/auth.middleware');
 router.post('/login', validator.login, login);
 router.post('/sign-up', validator.signUp, signUp);
 router.post('/refresh-token', validator.refreshToken, refreshToken);
-router.post('/get-me', validator.getMe, getMe);
+router.get('/me', authenticate, getMe);
 router.post('/forgot-password', validator.forgotPassword, forgotPassword);
 router.post('/reset-password', validator.resetPassword, resetPassword);
-router.post('/change-password', validator.changePassword, changePassword);
+router.post('/change-password', authenticate, validator.changePassword, changePassword);
 router.post('/verify-email', validator.verifyEmail, verifyEmail);
 router.post('/logout', authenticate, logout);
 
