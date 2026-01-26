@@ -1,7 +1,8 @@
 const express = require('express');
 
 const apiRoutes = require('./routes');
-const { ServerConfig } = require('./config'); 
+const { ServerConfig } = require('./config/index'); 
+const { connectDB } = require('./lib/db');
 
 const app = express();
 
@@ -18,4 +19,5 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server started on port ${PORT}`);
+    connectDB();
 });
