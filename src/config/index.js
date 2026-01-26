@@ -1,5 +1,7 @@
-const serverConfig = require('./server');
+require('./env'); // load env first
 
 module.exports = {
-    ServerConfig : serverConfig,
-}
+    server: require('./server.config'),
+    database: require('./database.config'),
+    auth: require('./auth.config')
+};

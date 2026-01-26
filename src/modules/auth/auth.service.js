@@ -1,7 +1,7 @@
 const userRepo = require('./auth.repository');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { ServerConfig } = require('../../config');
+const { auth } = require('../../config');
 
 /**
  * LOGIN
@@ -18,7 +18,7 @@ exports.login = async ({ email, password }) => {
     throw new Error('Invalid credentials');
   }
 
-  const JWT_SECRET = ServerConfig.JWT_SECRET;
+  const JWT_SECRET = auth.JWT_SECRET;
 
   const token = jwt.sign(
     { id: user._id }, JWT_SECRET, { expiresIn: '15m' }

@@ -1,7 +1,7 @@
 const express = require('express');
 
 const apiRoutes = require('./routes');
-const { ServerConfig } = require('./config/index'); 
+const { server } = require('./config'); 
 const { connectDB } = require('./lib/db');
 
 const app = express();
@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const PORT = ServerConfig.PORT || 3000;
+const PORT = server.PORT || 3000;
 
 app.use('/api', apiRoutes)
 
