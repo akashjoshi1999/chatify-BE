@@ -1,4 +1,4 @@
 module.exports = {
-  ...require('./auth.controller'),
-  ...require('./auth.middleware')
+  ...require("./auth.controller"),
+  ...require("./auth.middleware"),
 };

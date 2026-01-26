@@ -1,4 +1,4 @@
-const authService = require('./auth.service');
+const authService = require("./auth.service");
 
 exports.login = async (req, res, next) => {
   try {
@@ -75,7 +75,7 @@ exports.verifyEmail = async (req, res, next) => {
 exports.logout = async (req, res, next) => {
   try {
     await authService.logout(req.user);
-    res.status(200).json({ message: 'Logged out successfully' });
+    res.status(200).json({ message: "Logged out successfully" });
   } catch (err) {
     next(err);
   }
