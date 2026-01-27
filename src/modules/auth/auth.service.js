@@ -38,7 +38,7 @@ exports.login = async ({ email, password }) => {
  * SIGN UP
  */
 exports.signUp = async ({ email, password, name }) => {
-  const existing = await userRepo.findByEmailWithPassword(email);
+  const existing = await userRepo.findByEmail(email);
   if (existing) {
     throw new Error("User already exists");
   }
