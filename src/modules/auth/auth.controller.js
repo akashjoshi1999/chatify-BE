@@ -29,7 +29,7 @@ exports.refreshToken = async (req, res, next) => {
 
 exports.getMe = async (req, res, next) => {
   try {
-    const result = await authService.getMe(req.user);
+    const result = await authService.getMe(req.userId);
     res.status(200).json(result);
   } catch (err) {
     next(err);
